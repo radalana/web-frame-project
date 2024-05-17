@@ -1,34 +1,30 @@
-<form class="example-form">
+
+<form class="example-form" [formGroup]="formSignUp">
     <p>
         <mat-form-field>
             <mat-label>Email</mat-label>
-            <input name="email" type="email" matInput required>
+            <input matInput name="email" type="email" formControlName="email" required="">
         </mat-form-field>
     </p>
     <p>
         <mat-form-field>
             <mat-label>Passwort</mat-label>
-            <input type="password" matInput required="">
+            <input matInput type="text" name="password"formControlName="password" required="">
         </mat-form-field>
     </p>
     <p>
         <mat-form-field>
             <mat-label>Passwort bestätigen</mat-label>
-            <input type="password" matInput required="">
+            <input matInput type="text" name="password_confirm" formControlName="password_confirm" required="">
         </mat-form-field>
     </p>
     <p>
         <mat-form-field class="example-full-width">
             <mat-label>Firma</mat-label>
-            <input matInput disabled value="FH Technikum Wien">
+            <input matInput name="company" value="FH Technikum Wien">
           </mat-form-field>
     </p>
     <table class="example-full-width" cellspacing="0">
-    <tr>
-        <td><mat-label>Adresse</mat-label></td>
-        <td></td>
-        <td></td>
-    </tr>
         <tr>
       <td><mat-form-field class="example-full-width">
         <mat-label>Straße</mat-label>
@@ -40,7 +36,7 @@
       </mat-form-field></td>
       <td><mat-form-field class="example-full-width">
         <mat-label>Postleitzahl</mat-label>
-        <input matInput #postalCode maxlength="4" placeholder="1200">
+        <input matInput name="postal_code" formControlName="postal_code" #postalCode maxlength="4" placeholder="1200">
         <mat-hint align="end">{{postalCode.value.length}} / 4</mat-hint>
       </mat-form-field></td>
     </tr></table>
