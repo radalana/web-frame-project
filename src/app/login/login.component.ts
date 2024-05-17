@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  public email: string = 'sveta@radnaeva';
-  public password: string = '1234';
-
+  public email: string = '';
+  public password: string = '';
+  public password_confirm: string = '';
 }
