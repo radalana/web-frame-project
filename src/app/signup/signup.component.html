@@ -6,26 +6,31 @@
             <input matInput name="email" type="email" formControlName="email" required="">
 
             <!-- feld leer ist und user das Field berührt -->
-            @if(formSignUp.get('email')?.hasError('required') && formSignUp.get('email')?.touched){
-                <mat-error>E-Mail erforderlich</mat-error>
+            @if(formSignUp.get('email')?.hasError('required')){
+                <mat-error>Bitte geben Ihre E-Mail ein</mat-error>
             }
             @if(formSignUp.get('email')?.hasError('email')) {
-                <mat-error>nicht gültig</mat-error>
+                <mat-error>Bitte geben Sie eine gültige E-Mail Adresse ein.</mat-error>
             }
         </mat-form-field>
     </p>
     <p>
         <mat-form-field appearance="fill">
             <mat-label>Passwort</mat-label>
-            <input matInput type="text" name="password"formControlName="password" #pword minlength="8" required="">
-            <mat-hint align="end">{{pword.value.length}} / 8</mat-hint>
+            <input matInput type="text" name="password" formControlName="password" #pword minlength="8" required="">
+            @if(formSignUp.get('password')?.hasError('required')){
+                <mat-error>Bitte geben Sie das Passwort ein</mat-error>
+            }
+            @if(formSignUp.get('password')?.hasError('minlength')) {
+                <mat-error>Das Passwort muss mindestens 8 Zeichen lang sein.</mat-error>
+            }
         </mat-form-field>
     </p>
     <p>
         <mat-form-field>
             <mat-label>Passwort bestätigen</mat-label>
             <input matInput type="text" name="password_confirm" formControlName="password_confirm" #pword_c minlength="8" required="">
-            @if(formSignUp.errors?.['mismatch']) {
+            @if(formSignUp.errors?.['mismatch'] ||  formSignUp.get('password_confirm')?.hasError('required')) {
                 <mat-error>Die Passwörter stimmen nicht überein</mat-error>
             }
         </mat-form-field>
@@ -33,15 +38,17 @@
     <p>
         <mat-form-field class="example-full-width">
             <mat-label>Firma</mat-label>
-            <input matInput name="company" value="FH Technikum Wien">
+            <input matInput name="company" value="FH Technikum Wien" disabled>
+          </mat-form-field>
+    </p>
+    <p>
+        <mat-form-field class="example-full-width">
+            <mat-label>Adresse</mat-label>
+            <textarea matInput></textarea>
           </mat-form-field>
     </p>
     <table class="example-full-width" cellspacing="0">
         <tr>
-      <td><mat-form-field class="example-full-width">
-        <mat-label>Straße</mat-label>
-        <input matInput>
-      </mat-form-field></td>
       <td><mat-form-field class="example-full-width">
         <mat-label>Stadt</mat-label>
         <input matInput placeholder="Wien">
@@ -50,6 +57,9 @@
         <mat-label>Postleitzahl</mat-label>
         <input matInput name="postal_code" formControlName="postal_code" #postalCode maxlength="4" placeholder="1200">
         <mat-hint align="end">{{postalCode.value.length}} / 4</mat-hint>
+        @if(formSignUp.get('postal_code')?.hasError('pattern')) {
+            <mat-error>Die Postleitzahl darf nur Zahlen enthalten.</mat-error>
+        }
       </mat-form-field></td>
     </tr></table>
     <button mat-flat-button color="primary" type="submit">Registrieren</button>
