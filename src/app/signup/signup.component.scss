@@ -17,3 +17,8 @@ padding-right: 8px;
 .example-button-row a {
   margin-right: 8px;
 }
+mat-error {
+  margin: 10px 10px;
+  box-sizing: border-box;
+  white-space: nowrap; //damit ganze error message angezeigt wird
+}

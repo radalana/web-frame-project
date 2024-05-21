@@ -2,20 +2,32 @@
 <form class="example-form" [formGroup]="formSignUp">
     <p>
         <mat-form-field>
-            <mat-label>Email</mat-label>
+            <mat-label>E-Mail</mat-label>
             <input matInput name="email" type="email" formControlName="email" required="">
+
+            <!-- feld leer ist und user das Field berührt -->
+            @if(formSignUp.get('email')?.hasError('required') && formSignUp.get('email')?.touched){
+                <mat-error>E-Mail erforderlich</mat-error>
+            }
+            @if(formSignUp.get('email')?.hasError('email')) {
+                <mat-error>nicht gültig</mat-error>
+            }
         </mat-form-field>
     </p>
     <p>
-        <mat-form-field>
+        <mat-form-field appearance="fill">
             <mat-label>Passwort</mat-label>
-            <input matInput type="text" name="password"formControlName="password" required="">
+            <input matInput type="text" name="password"formControlName="password" #pword minlength="8" required="">
+            <mat-hint align="end">{{pword.value.length}} / 8</mat-hint>
         </mat-form-field>
     </p>
     <p>
         <mat-form-field>
             <mat-label>Passwort bestätigen</mat-label>
-            <input matInput type="text" name="password_confirm" formControlName="password_confirm" required="">
+            <input matInput type="text" name="password_confirm" formControlName="password_confirm" #pword_c minlength="8" required="">
+            @if(formSignUp.errors?.['mismatch']) {
+                <mat-error>Die Passwörter stimmen nicht überein</mat-error>
+            }
         </mat-form-field>
     </p>
     <p>

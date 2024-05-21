@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-signup',
@@ -10,7 +10,7 @@ export class SignupComponent {
   fb = inject(FormBuilder); //injection statt in constructor zu initialisieren
   formSignUp = this.fb.group(
     {
-      email: ['', Validators.required, Validators.email],
+      email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.minLength(8)],
       password_confirm: ['', Validators.maxLength(8)],
       postal_code: ['', Validators.pattern('^\\d{4}$')]
