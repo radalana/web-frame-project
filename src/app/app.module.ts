@@ -7,7 +7,7 @@ import { LoginComponent } from './login/login.component';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { SignupComponent } from './signup/signup.component';
-import {MatFormFieldModule} from '@angular/material/form-field'; //for form
+import {MatFormFieldControl, MatFormFieldModule} from '@angular/material/form-field'; //for form
 import {MatInputModule} from '@angular/material/input';//for form
 import {MatIconModule} from '@angular/material/icon';//for form icons
 import {MatButtonModule} from '@angular/material/button';

@@ -1,5 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -7,28 +7,21 @@ import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@ang
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  fb = inject(FormBuilder); //injection statt in constructor zu initialisieren
-  formLogIn = this.fb.group(
-    {
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]]
-    }, 
-    {
-      validators: this.checkLogin //custom validator
-    }
-  );
+  hide = true;
+  public loginForm = new FormGroup( {
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [Validators.required])
+  }
+  )
 
-  checkLogin(formGroup: AbstractControl): ValidationErrors | null {
-    const login = formGroup.get('email')?.value;
-    const password = formGroup.get('password')?.value;
-
-    const result = (login === 'test@test.at') && (password === '12345678');
-    
+  public validateLogin() {
+    const inputEmail = this.loginForm.get(['email'])?.value;
+    const inputPassword = this.loginForm.get(['password'])?.value;
+    const result = (inputEmail === 'test@test.at') && (inputPassword === '12345678');
     if (result === true) {
-      console.log('Login successful');
-    } else {
-      console.log('Login failed');
+      console.log('Login successful.');
+    }else {
+      console.log('Login failed.');
     }
-    return result === true? null : {'invalid': true };
   }
 }

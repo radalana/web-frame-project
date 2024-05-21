@@ -26,29 +26,30 @@
 -->
 
 <!-- Übung 2 Aufgabe 2 -->
-<form class="example-form" [formGroup]="formLogIn">
+<form class="form" [formGroup]="loginForm">
     <p>
-        <mat-form-field>
-            <mat-label>E-Mail</mat-label>
+        <mat-form-field appearance="fill">
+            <mat-label>Email</mat-label>
             <input matInput name="email" type="email" formControlName="email" required="">
-
-            <!-- feld leer ist und user das Field berührt -->
-            @if(formLogIn.get('email')?.hasError('required')){
-                <mat-error>Bitte geben Ihre E-Mail ein</mat-error>
-            }
-            @if(formLogIn.get('email')?.hasError('email')) {
-                <mat-error>Bitte geben Sie eine gültige E-Mail Adresse ein.</mat-error>
+            <mat-icon matPrefix>mail</mat-icon>
+            @if (!loginForm.controls.email.valid && loginForm.controls.email.touched) {
+                <mat-error>Bitt geben Sie die E-Mail ein</mat-error>
             }
         </mat-form-field>
-    </p>
     <p>
         <mat-form-field appearance="fill">
             <mat-label>Passwort</mat-label>
-            <input matInput type="text" name="password" formControlName="password" #pword minlength="8" required="">
-            @if(formLogIn.get('password')?.hasError('required')){
+            <input matInput  [type]="hide ? 'password' : 'text'" name="password" formControlName="password" required="">
+            <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+            <mat-icon matPrefix>lock</mat-icon>
+            @if(!loginForm.controls.password.valid && loginForm.controls.password.touched){
                 <mat-error>Bitte geben Sie das Passwort ein</mat-error>
             }
         </mat-form-field>
     </p>
-    <button mat-flat-button color="primary" type="submit">Login</button>
+        <button mat-flat-button (click)="validateLogin()" color="primary" type="submit">Login</button>
+   
+    
   </form>
