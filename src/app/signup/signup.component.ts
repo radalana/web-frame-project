@@ -1,27 +1,28 @@
-import { Component, inject } from '@angular/core';
-import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+
+export const confirmPassword: ValidatorFn = (
+  control: AbstractControl
+): ValidationErrors | null => {
+  const result = (control.value.password === control.value.password_confirm) ? null : {mismatch: true};
+  return result;
+}
+
 
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss'
 })
+
 export class SignupComponent {
-  fb = inject(FormBuilder); //injection statt in constructor zu initialisieren
-  formSignUp = this.fb.group(
-    {
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
-      password_confirm: ['', [Validators.required, Validators.minLength(8)]],
-      postal_code: ['', Validators.pattern('^\\d{4}$')]
-    }, 
-    {
-      validators: this.passwordMatchValidator //custom validator
-    }
+  
+  public signupForm = new FormGroup({
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [Validators.required, Validators.minLength(8)]),
+    password_confirm: new FormControl('', [Validators.required]),
+    postal_code: new FormControl('', [Validators.pattern('^\\d*')])
+  },
+  confirmPassword
   );
-  passwordMatchValidator(formGroup: AbstractControl): ValidationErrors | null  {
-    const password = formGroup.get('password')?.value;
-    const confirmPassword = formGroup.get('password_confirm')?.value;
-    return password === confirmPassword ? null : { 'mismatch': true };
-  }
 }
