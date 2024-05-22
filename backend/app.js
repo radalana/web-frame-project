@@ -1,8 +1,15 @@
 const express = require('express');
 const app = express(); //express server gestartet
 
+//um mit json files zu arbeiten
+app.use(express.json());
+app.use(express.urlencoded({extended: false}));
+
+
 
 // ------Middleware (start)-------
+
+/*
 app.use((req, res, next) => {
     // middleware function
     console.log('My first middleware');
@@ -12,6 +19,7 @@ app.use((req, res, next) => {
 app.use((req, res) => {
     res.end('Middleware finished');
 });
+*/
 // ------Middleware (end)-------
 
 //hauptseite
