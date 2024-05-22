@@ -11,13 +11,15 @@ import {MatFormFieldControl, MatFormFieldModule} from '@angular/material/form-fi
 import {MatInputModule} from '@angular/material/input';//for form
 import {MatIconModule} from '@angular/material/icon';//for form icons
 import {MatButtonModule} from '@angular/material/button';
+import { NavigationComponent } from './navigation/navigation.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    SignupComponent
+    SignupComponent,
+    NavigationComponent
   ],
   imports: [
     BrowserModule,
