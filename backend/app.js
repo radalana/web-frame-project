@@ -1,5 +1,7 @@
 const express = require('express');
 const app = express(); //express server gestartet
+const cors = require('cors');
+app.use(cors());//cross origin request zu ermöglichen
 
 //um mit json files zu arbeiten
 app.use(express.json());

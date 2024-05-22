@@ -19,7 +19,7 @@ export class LoginComponent {
   //construct injection
   constructor(private http: HttpClient) {}
 
-  onSubmit(form: NgForm) {
+  onSubmit(form: FormGroup) {
     console.log(form.value);
     //{message: string} erwartet response from server als objekt mit message property
     this.http.post<{message: string}>('http://localhost:3000/login', form.value, this.httpOptions)
