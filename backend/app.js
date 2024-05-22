@@ -28,9 +28,17 @@ app.get('/', (req, res)  => {
     res.send('GET Request to ...');
 });
 
-app.post('/', (req, res)  => {
-    console.log('hello world'); //in console, not browser!
-    res.send('POST Request to ...');
+
+//POST route
+app.post('/login', (req, res)  => {
+    const loginData =JSON.stringify(req.body);//data from form
+    console.log(loginData);
+
+    //login in db
+
+    res.status(200).json({
+        message: 'Hello Login from express.js'//selbstdefiniert
+    }); //um json file an der Client zurück zu schicken
 });
 
 
