@@ -1,8 +1,12 @@
 const http = require('http');
 
-const server = http.createServer((req, res) => {
-    res.end('This is my first response');
-}
-);
+// express app
+const app = require('./app.js');
 
-server.listen(process.env.PORT  || 3000);
+const port = process.env.PORT  || 3000;
+app.set('port', port);
+
+//http server in der express app abgebildet, deswegen als parameter
+const server = http.createServer(app);
+
+server.listen(port);

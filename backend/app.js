@@ -1,5 +1,5 @@
 const express = require('express');
-const app = express(); //express server
+const app = express(); //express server gestartet
 
 
 // ------Middleware (start)-------
@@ -10,7 +10,7 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res) => {
-    console.log('Middleware finished');
+    res.end('Middleware finished');
 });
 // ------Middleware (end)-------
 
