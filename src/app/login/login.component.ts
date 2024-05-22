@@ -1,5 +1,6 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormControl, FormGroup, NgForm, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -8,6 +9,21 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 })
 export class LoginComponent {
   hide = true;
+
+  //damit Daten in alle Requesten in json format verschikt werden (kann man auch direct in request)
+  httpOptions = {
+    headers: new HttpHeaders({'Content-Type': 'application/json'});
+  }
+
+  //construct injection
+  constructor(private http: HttpClient) {}
+
+  onSubmit(form: NgForm) {
+    console.log(form.value);
+    //{message: string} erwartet response from server als obj mit message property
+    this.http.post<{message: string}>('http://localhost:3000/login', form.value, this.httpOptions);
+  }
+
   public loginForm = new FormGroup( {
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required])
