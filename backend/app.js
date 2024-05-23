@@ -30,6 +30,41 @@ app.get('/', (req, res)  => {
     res.send('GET Request to ...');
 });
 
+app.post('/users', (req, res) => {
+    try {
+        const userData = req.body;
+        const {email, password, ...contactInformation} = userData;
+        const hashedPassword = hash(password);
+        const user = {email, hashedPassword, ...contactInformation};
+        if (isUserRegistred(email)){
+            res.status(409).json({message: `User with ${email} already exists`});
+        }
+        saveUserToDatabase(user);
+        res.status(201).json({message: `User ${email} created successfully`});
+    }catch(error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.post('/sessions', (req, res) => {
+    const user = req.body;
+    const email = user.getEmail();
+    const password = user.getPassword();
+    if (!isUserRegistred(email)) {
+        res.status(401).json({
+            message: 'No user with this email exists'
+         });
+    }
+    if (checkPasswordForThisEmail(password, email)) {
+        const token = createToken(password, email);
+        sendToClient(token);
+    } else {
+        res.status(401).json({
+            message: 'Incorrect password'
+        })
+    }
+});
+
 
 //POST route
 app.post('/login', (req, res)  => {
