@@ -9,25 +9,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
 
-
-// ------Middleware (start)-------
-
-/*
-app.use((req, res, next) => {
-    // middleware function
-    console.log('My first middleware');
-    next(); //wird die nächste middleware aufgerufen von express
-});
-
-app.use((req, res) => {
-    res.end('Middleware finished');
-});
-*/
-// ------Middleware (end)-------
-
-//hauptseite
-
-app.get('/', (req, res)  => {
+app.get('/my', (req, res)  => {
     console.log('login successed'); //in console, not browser!
     res.status(200).send({message: 'Welcome'});
 });
@@ -83,7 +65,7 @@ app.post('/sessions', (req, res) => {
          });
     }
     if (req.session.authentication) {
-        res.json(req.session)
+        res.json({ message: 'Already authenticated', token: req.session.authentication });
     }else {
         if (checkPasswordForThisEmail(password, email)) {
             console.log('password passt');
@@ -91,7 +73,7 @@ app.post('/sessions', (req, res) => {
             const token = generateToken(password, email);
             req.session.authentication = token;
             //sendToClient(token);
-            res.status(201).json({ message: 'Authentication successful', redirectUrl: '/' });
+            res.status(201).json({ message: 'Authentication successful', token: token,redirectUrl: '/my' });
         } else {
             res.status(401).json({
                 message: 'Incorrect password'

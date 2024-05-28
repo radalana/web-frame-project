@@ -12,7 +12,6 @@ import {MatFormFieldControl, MatFormFieldModule} from '@angular/material/form-fi
 import {MatInputModule} from '@angular/material/input';//for form
 import {MatIconModule} from '@angular/material/icon';//for form icons
 import {MatButtonModule} from '@angular/material/button';
-import { NavigationComponent } from './navigation/navigation.component';
 import {MatCardModule} from '@angular/material/card';
 import { LandingPageComponent } from './landing-page/landing-page.component'; 
 
@@ -22,7 +21,6 @@ import { LandingPageComponent } from './landing-page/landing-page.component';
     AppComponent,
     LoginComponent,
     SignupComponent,
-    NavigationComponent,
     LandingPageComponent
   ],
   imports: [

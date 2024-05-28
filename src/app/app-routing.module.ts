@@ -7,8 +7,7 @@ import { LandingPageComponent } from './landing-page/landing-page.component';
 
 const routes: Routes = [
   {path: 'sessions', component: LoginComponent},
-  {path: 'users', component: SignupComponent},
-  {path: '', component: LandingPageComponent}
+  {path: 'users', component: SignupComponent}
 ];
 
 @NgModule({
