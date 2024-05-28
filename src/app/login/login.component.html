@@ -1,55 +1,29 @@
-<!-- <div>
-    <form action="">
-        <div>
-             für ngModel import @ngModule FormsModule !!!
-            <input type="email" name="email" id="email" [(ngModel)]="email"required>
-            <label for="email">Email</label>
-        </div>
-        <div>
-            <input type="password" name="password" id="password" [(ngModel)]="password" required>
-            <label for="password">Password</label>
-        </div>
-        <div>
-            <input type="password_confirm" name="password_confirm" id="password_confirm" [(ngModel)]="password_confirm" required>
-            <label for="password_confirm">Confirm password</label>
-        </div>
-        <div>
-            <button type="submit">Log in</button>
-        </div>
-    </form>
-</div>
-<div> 
-    {{ email }}
-</div>
-<div>{{ password }}</div>
-<div>{{ password_confirm}}</div>
--->
+<mat-card class="form-card">
+    <mat-card-content>
+        <form class="form" [formGroup]="loginForm" (ngSubmit)="onSubmit(loginForm)">
+            <p><mat-form-field appearance="fill">
+                <mat-label>Email</mat-label>
+                <input matInput name="email" type="email" formControlName="email" required="">
+                <mat-icon matPrefix>mail</mat-icon>
+                @if (!loginForm.controls.email.valid && loginForm.controls.email.touched) {
+                    <mat-error>Bitt geben Sie die E-Mail ein</mat-error>
+                }
+            </mat-form-field><p>
 
-<!-- Übung 2 Aufgabe 2 -->
-<form class="form" [formGroup]="loginForm" (ngSubmit)="onSubmit(loginForm)">
-    <p>
-        <mat-form-field appearance="fill">
-            <mat-label>Email</mat-label>
-            <input matInput name="email" type="email" formControlName="email" required="">
-            <mat-icon matPrefix>mail</mat-icon>
-            @if (!loginForm.controls.email.valid && loginForm.controls.email.touched) {
-                <mat-error>Bitt geben Sie die E-Mail ein</mat-error>
-            }
-        </mat-form-field>
-    <p>
-        <mat-form-field appearance="fill">
-            <mat-label>Passwort</mat-label>
-            <input matInput  [type]="hide ? 'password' : 'text'" name="password" formControlName="password" required="">
-            <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-                <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-              </button>
-            <mat-icon matPrefix>lock</mat-icon>
-            @if(!loginForm.controls.password.valid && loginForm.controls.password.touched){
-                <mat-error>Bitte geben Sie das Passwort ein</mat-error>
-            }
-        </mat-form-field>
-    </p>
-        <button mat-flat-button (click)="validateLogin()" color="primary" type="submit">Login</button>
-   
-    
-  </form>
+            <mat-form-field appearance="fill">
+                <mat-label>Passwort</mat-label>
+                <input matInput  [type]="hide ? 'password' : 'text'" name="password" formControlName="password" required="">
+                <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                    <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+                <mat-icon matPrefix>lock</mat-icon>
+                @if(!loginForm.controls.password.valid && loginForm.controls.password.touched){
+                    <mat-error>Bitte geben Sie das Passwort ein</mat-error>
+                }
+            </mat-form-field></p>
+            <mat-card-actions>
+                <button mat-flat-button (click)="validateLogin()" color="primary" type="submit">Login</button>
+            </mat-card-actions>
+        </form>
+    </mat-card-content>
+</mat-card>
