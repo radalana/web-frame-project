@@ -9,10 +9,15 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
 
-app.get('/my', (req, res)  => {
-    console.log('login successed'); //in console, not browser!
-    res.status(200).send({message: 'Welcome'});
+app.get('/', (req, res)  => {
+    console.log('First Page'); //in console, not browser!
+    res.status(200).send({message: 'First'});
 });
+
+app.get('/my', (req, res) => {
+    console.log('LandingPage');
+    res.status(200).send({message: 'Welcome'});
+})
 
 function isUserRegistred(email) {
     return true;
@@ -24,12 +29,13 @@ function hash(password) {
 
 
 app.use(session({
-    cookie: {maxAge: 30000},
+    cookie: {maxAge: 120000}, //2 min für checking
     saveUninitialized: false,
     resave: false,
     secret: 'my key'
 
 }));
+
 app.post('/users', (req, res) => {
     try {
         const userData = req.body;
@@ -52,7 +58,7 @@ function checkPasswordForThisEmail(password, email) {
 }
 
 function generateToken(password, email) {
-    return password + email;
+    return password + email + Math.random();
 }
 app.post('/sessions', (req, res) => {
     const user = req.body;
@@ -65,7 +71,7 @@ app.post('/sessions', (req, res) => {
          });
     }
     if (req.session.authentication) {
-        res.json({ message: 'Already authenticated', token: req.session.authentication });
+        res.json({ message: 'Already authenticated', token: req.session.authentication, redirectUrl: '/my'});
     }else {
         if (checkPasswordForThisEmail(password, email)) {
             console.log('password passt');
