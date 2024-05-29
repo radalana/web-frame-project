@@ -3,11 +3,13 @@
   max-width: 350px;
   height: max-content;
 }
-
-
 mat-error {
   white-space: nowrap; //damit ganze error message angezeigt wird
 }
 mat-form-field {
   width: 100%;
+}
+p {
+  text-align: center;
+  margin: 10px;
 }

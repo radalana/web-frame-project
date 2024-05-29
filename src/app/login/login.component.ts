@@ -38,7 +38,6 @@ export class LoginComponent {
     password: new FormControl('', [Validators.required])
   }
   )
-
   public validateLogin() {
     const inputEmail = this.loginForm.get(['email'])?.value;
     const inputPassword = this.loginForm.get(['password'])?.value;
