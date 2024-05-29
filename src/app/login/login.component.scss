@@ -1,15 +1,9 @@
-.form {
+.form-card {
   min-width: 150px;
   max-width: 350px;
-  width: 100%;
+  height: max-content;
 }
-.example-header-image {
-  background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
-  background-size: cover;
-}
-.example-full-width {
-  width: 100%;
-}
+
 
 mat-error {
   white-space: nowrap; //damit ganze error message angezeigt wird
