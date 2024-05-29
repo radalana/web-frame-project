@@ -17,8 +17,11 @@ padding-right: 8px;
 .example-button-row a {
   margin-right: 8px;
 }
-mat-error {
+mat-form-field mat-error {
+  position: absolute;
+  left: -1.5em; 
   margin: 10px 10px;
+  font-size: 12px;
   white-space: nowrap; //damit ganze error message angezeigt wird
 }
 
