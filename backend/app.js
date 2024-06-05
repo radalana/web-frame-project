@@ -1,9 +1,6 @@
-require('dotenv').config(); // lädt Umgebungsvariabeln aus .env Datei
-
 const express = require('express');
 const app = express(); //express server gestartet
-const session = require('express-session');
-const store = new session.MemoryStore();
+
 const cors = require('cors');
 app.use(cors());//cross origin request zu ermöglichen
 
@@ -11,50 +8,69 @@ app.use(cors());//cross origin request zu ermöglichen
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
-app.use(session({
-    cookie: {maxAge: 120000}, //2 min für checking
-    saveUninitialized: false, //not generate new session every times
-    resave: false,
-    secret: 'my key'
+const sessions = {};
 
-}));
-
-/**
- * get the token, that user send us,
- * verify that is the correct user,
- * and return user to '/' lading page
- */
-function authenticateToken(res, req, next) {
-    const authHeader = req.headers['authorization'];
-    const token = req.headers['authentication']; //это что
-    if (!token) {
-        //и переслать на логин
-        return res.status(401).send({message: 'Token nicht vorhanden.'});
+app.get('/', (req, res)  => {
+    const sessionToken = req.headers.cookie?.split('=')[1]; // получаю из request токен
+    console.log(sessionToken);
+    const userSession = sessions[sessionToken];
+    if (!userSession){
+        return res.status(401).send({message: 'Unauthorized'});
     }
+    const userId = userSession.userId;
+    res.status(200).send([{
+        id: 1,
+        email: 'Learn Node',
+        userId
+    }]);
+});
+function isUserRegistred(email) {
+    //find email in database return user object
+    return email === "test@test.at";
+}
 
-    /*
-    if token == token.из сессии
-    */
-    if (token == token) {
-        req.user = user;
-        next();
-    }else {
-        return res.status(403);
+//TODO: rename to verify user
+function checkPasswordForThisEmail(password, email) {
+    //only now befor database
+    return email=== "test@test.at" && password === "12345678";
+}
+function generateToken(email, password) {
+    return email + password + ' ' + Math.random();
+}
+app.post('/sessions', (req, res) => {
+    const {email, password} = req.body;
+    
+    if (!email || !password) { //validation 
+        return res.status(400).send({message: 'E-mail und Passwort sind erforderlich'});
+    }
+    if (!isUserRegistred(email)) {//validate
+        res.status(401).json({
+            message: 'No user with this email exists'
+         });
+    }
+    if(!checkPasswordForThisEmail(password, email)) {
+        res.status(401).json({
+            message: 'Incorrect password'
+        });
+    }
+        const sessionToken = generateToken(email, password);
+        //lege ein neuen Session Token
+        sessions[sessionToken] = {userId: 1, email}; //passord not in session!
+
+        //send to Client als header
+        res.set('Set-Cookie', `session=${sessionToken}`); //request bei allen endpoint wurde cookies hinzugefuegt
+        res.redirect('/');
     }
     
-}
-app.get('/', authenticateToken, (req, res)  => {
-    res.send('Willcomen');
-});
+// }
+);
 /*
 app.get('/my', (req, res) => {
     console.log('LandingPage');
     res.status(200).send({message: 'Welcome'});
 })
 */
-function isUserRegistred(email) {
-    return true;
-}
+
 function hash(password) {
     return password;
 }
@@ -80,41 +96,7 @@ app.post('/users', (req, res) => {
     }
 });
 
-function checkPasswordForThisEmail(password, email) {
-    return true;
-}
 
-function generateToken(email, password, options) {
-    return email + password + options;
-}
-app.post('/sessions', (req, res) => {
-    const {email, password} = req.body;
-    
-    if (!email || !password) { //validation 
-        return res.status(400).send({message: 'E-mail und Passwort sind erforderlich'});
-    }
-    if (!isUserRegistred(email)) {//validate
-        res.status(401).json({
-            message: 'No user with this email exists'
-         });
-    }
-    if (req.session.authentication) {
-        res.status(201).json({ message: 'Already authenticated', token: req.session.authentication, redirectUrl: '/my'});
-        //TODO: automated log in
-    }else {
-        if (checkPasswordForThisEmail(password, email)) {
-            console.log('password passt');
-            const accessToken = generateToken(email, password, process.env.ACCESS_TOKEN_SECRET);
-            res.json({accessToken: accessToken});
-            const user = {email};
-        } else {
-            res.status(401).json({
-                message: 'Incorrect password'
-            });
-        }
-    }
-    
-});
 
 app.delete('/session', (req, res) => {
     //delete token token in browser
