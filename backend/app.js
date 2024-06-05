@@ -1,3 +1,5 @@
+require('dotenv').config(); // lädt Umgebungsvariabeln aus .env Datei
+
 const express = require('express');
 const app = express(); //express server gestartet
 const session = require('express-session');
@@ -17,20 +19,31 @@ app.use(session({
 
 }));
 
-function authenticate(res, req, next) {
+/**
+ * get the token, that user send us,
+ * verify that is the correct user,
+ * and return user to '/' lading page
+ */
+function authenticateToken(res, req, next) {
+    const authHeader = req.headers['authorization'];
     const token = req.headers['authentication']; //это что
     if (!token) {
-        return res.status(401).send({error: 'Token nicht vorhanden.'});
+        //и переслать на логин
+        return res.status(401).send({message: 'Token nicht vorhanden.'});
     }
-    const session; //= get session[token];
-    if (!session) {
-        return res.status(401).send({error: 'Ungultige Token'});
+
+    /*
+    if token == token.из сессии
+    */
+    if (token == token) {
+        req.user = user;
+        next();
+    }else {
+        return res.status(403);
     }
-    req.user = session.username;
-    next();
     
 }
-app.get('/', authenticate, (req, res)  => {
+app.get('/', authenticateToken, (req, res)  => {
     res.send('Willcomen');
 });
 /*
@@ -71,14 +84,15 @@ function checkPasswordForThisEmail(password, email) {
     return true;
 }
 
-function generateToken(password, email) {
-    return password + email + Math.random();
+function generateToken(email, password, options) {
+    return email + password + options;
 }
 app.post('/sessions', (req, res) => {
-    const user = req.body;
-    const email = user['email'];
-    const password = user['password'];
-    console.log(email, password);
+    const {email, password} = req.body;
+    
+    if (!email || !password) { //validation 
+        return res.status(400).send({message: 'E-mail und Passwort sind erforderlich'});
+    }
     if (!isUserRegistred(email)) {//validate
         res.status(401).json({
             message: 'No user with this email exists'
@@ -90,12 +104,9 @@ app.post('/sessions', (req, res) => {
     }else {
         if (checkPasswordForThisEmail(password, email)) {
             console.log('password passt');
-            req.session.authentication = true;
-            const token = generateToken(password, email);
-            req.session.session_token = token;
-            //sendToClient(token);
-            res.status(201).json({ message: 'Authentication successful', token: token,redirectUrl: '/' })
-            .cookie('session_token', token);
+            const accessToken = generateToken(email, password, process.env.ACCESS_TOKEN_SECRET);
+            res.json({accessToken: accessToken});
+            const user = {email};
         } else {
             res.status(401).json({
                 message: 'Incorrect password'
