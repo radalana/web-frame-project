@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express(); //express server gestartet
 const session = require('express-session');
+const store = new session.MemoryStore();
 const cors = require('cors');
 app.use(cors());//cross origin request zu ermöglichen
 
@@ -8,17 +9,36 @@ app.use(cors());//cross origin request zu ermöglichen
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
+app.use(session({
+    cookie: {maxAge: 120000}, //2 min für checking
+    saveUninitialized: false, //not generate new session every times
+    resave: false,
+    secret: 'my key'
 
-app.get('/', (req, res)  => {
-    console.log('First Page'); //in console, not browser!
-    res.status(200).send({message: 'First'});
+}));
+
+function authenticate(res, req, next) {
+    const token = req.headers['authentication']; //это что
+    if (!token) {
+        return res.status(401).send({error: 'Token nicht vorhanden.'});
+    }
+    const session; //= get session[token];
+    if (!session) {
+        return res.status(401).send({error: 'Ungultige Token'});
+    }
+    req.user = session.username;
+    next();
+    
+}
+app.get('/', authenticate, (req, res)  => {
+    res.send('Willcomen');
 });
-
+/*
 app.get('/my', (req, res) => {
     console.log('LandingPage');
     res.status(200).send({message: 'Welcome'});
 })
-
+*/
 function isUserRegistred(email) {
     return true;
 }
@@ -28,13 +48,7 @@ function hash(password) {
 
 
 
-app.use(session({
-    cookie: {maxAge: 120000}, //2 min für checking
-    saveUninitialized: false,
-    resave: false,
-    secret: 'my key'
 
-}));
 
 app.post('/users', (req, res) => {
     try {
@@ -71,15 +85,17 @@ app.post('/sessions', (req, res) => {
          });
     }
     if (req.session.authentication) {
-        res.json({ message: 'Already authenticated', token: req.session.authentication, redirectUrl: '/my'});
+        res.status(201).json({ message: 'Already authenticated', token: req.session.authentication, redirectUrl: '/my'});
+        //TODO: automated log in
     }else {
         if (checkPasswordForThisEmail(password, email)) {
             console.log('password passt');
             req.session.authentication = true;
             const token = generateToken(password, email);
-            req.session.authentication = token;
+            req.session.session_token = token;
             //sendToClient(token);
-            res.status(201).json({ message: 'Authentication successful', token: token,redirectUrl: '/my' });
+            res.status(201).json({ message: 'Authentication successful', token: token,redirectUrl: '/' })
+            .cookie('session_token', token);
         } else {
             res.status(401).json({
                 message: 'Incorrect password'

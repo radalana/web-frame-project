@@ -13,7 +13,7 @@ export class LandingPageComponent {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
   }
   getLandingPage() {
-    return this.http.get<{message: string}>('http://localhost:3000/', this.httpOptions)
+    return this.http.get<{message: string}>('http://localhost:3000/my', this.httpOptions)
     .subscribe((response) => {console.log(response.message)
     });
   }
