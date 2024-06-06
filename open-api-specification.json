@@ -5,9 +5,33 @@
       "version":"0.0.0"
     },
     "paths": {
-      "/login": {
+      "/:userId": {
+        "get": {
+          "summary": "get landing page",
+          "parameters": [
+            {
+              "name": "userId",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              },
+              "description": "The ID of the user"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "The landing page"
+            },
+            "401": {
+              "description": "Unauthorized"
+            }
+          }
+        }
+      },
+      "/sessions": {
         "post": {
-          "summury": "Authenticate a user",
+          "summary": "Authenticate a user",
           "requestBody": {
             "required": true,
             "content": {
@@ -25,22 +49,32 @@
                   "required": ["email", "password"]
                 }
               }
-
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Successful login"
+            },
+            "400": {
+              "description": "Bas request"
+            }
+          } 
+        },
+        "delete": {
+          "summary": "Logout a user",
+          "responses": {
+            "204": {
+              "description": "Successful logout"
+            },
+            "401": {
+              "description": "Unauthorized"
             }
           }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful login"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        } 
-      },
-      "/signup": {
+        }
+      }, 
+      "/users": {
         "post": {
-          "summury": "Register a new user",
+          "summary": "Register a new user",
           "requestBody": {
             "required": true,
             "content": {
@@ -74,10 +108,7 @@
           },
           "responses":{
             "201": {
-              "description": "User created successfully",
-              "content": {
-                "application/json": {}
-              } 
+              "description": "User created successfully"
             },
             "400": {
               "description": "Bad request"
@@ -87,8 +118,7 @@
       },
       "/highscores": {
         "get": {
-          "summury": "Get the highscore list",
-          "security": [],
+          "summary": "Get the highscore list",
           "responses":{
             "200": {
               "description": "A list of highscores",
@@ -115,7 +145,28 @@
               "description": "Unauthorized"
             }
           }
+        },
+        "patch": {
+          "summary": "update scores",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": "Score sent successfully"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
         }
       }
     }
-  }
+}
