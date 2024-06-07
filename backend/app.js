@@ -126,19 +126,5 @@ app.post('/highscores/:id', (req, res) => {
 app.get('/highscores/:id', (req, res) => {
     //save
 });
-//POST route
-/*
-app.post('/login', (req, res)  => {
-    const loginData =JSON.stringify(req.body);//data from form
-    console.log(loginData);
-
-    //login in db
-
-    res.status(200).json({
-        message: 'Hello Login from express.js'//selbstdefiniert
-    }); //um json file an der Client zurück zu schicken
-});
-*/
-
 //damit express.js alle angelegte routen als module exportiert, um in node.js server zu verwenden
 module.exports = app;
