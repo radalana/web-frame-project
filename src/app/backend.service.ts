@@ -33,6 +33,7 @@ export class BackendService {
             .subscribe({
                 next: (response) => { 
                     console.log(response.message);
+                    this.router.navigate(['/login']);
                 },
                 error: (error) => {
                     //TO-DO message in browser

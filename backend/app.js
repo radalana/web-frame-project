@@ -21,7 +21,7 @@ const sessions = {
 
 app.get('/', (req, res)  => {
     console.log('headers', req.headers.cookie);
-    const token = req.headers.cookie?.split('=')[1];
+    const token = req.headers.cookie?.split('=')[1] || '';
     console.log('token in get /', token);
     
     const user = sessions[token];
@@ -77,6 +77,9 @@ app.post('/sessions', (req, res) => {
 app.delete('/sessions', (req, res) => {
     //get token
     const token = req.headers.cookie?.split('=')[1]; //dвынести в отдельную функцию
+    if (!token) {
+        return res.status(400).send({ message: 'Token not found' });
+    }
     //delete token token in session
     delete  sessions[token];
     //delete token token in browser
