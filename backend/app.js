@@ -46,7 +46,7 @@ app.post('/sessions', (req, res) => {
     const {email, password} = req.body;
     
     if (!email || !password) { //validation 
-        return res.status(400).send({message: 'E-mail und Passwort sind erforderlich'});
+        return res.status(400).send({Token: 'E-mail und Passwort sind erforderlich'});
     }
     if (!isUserRegistred(email)) {//validate
         res.status(401).json({
@@ -60,14 +60,12 @@ app.post('/sessions', (req, res) => {
     }
         const sessionToken = generateToken(email, password);
         //lege ein neuen Session Token
-        sessions[sessionToken] = {userId: 1, email}; //passord not in session!
+        sessions[email] = {sessionToken}; //passord not in session!
 
         //send to Client als header
-        res.set('Set-Cookie', `session=${sessionToken}`); //request bei allen endpoint wurde cookies hinzugefuegt
-        return res.redirect('http://localhost:4200/');
+        //res.set('Set-Cookie', `session=${sessionToken}`); //request bei allen endpoint wurde cookies hinzugefuegt
+        return res.send({Token: sessionToken});
     }
-    
-// }
 );
 /*
 app.get('/my', (req, res) => {
