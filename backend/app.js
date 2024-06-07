@@ -3,7 +3,7 @@ const app = express(); //express server gestartet
 
 const cors = require('cors');
 app.use(cors());//cross origin request zu ermöglichen
-
+ 
 //um mit json files zu arbeiten
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
@@ -12,18 +12,23 @@ const sessions = {};
 
 app.get('/', (req, res)  => {
     const sessionToken = req.headers.cookie?.split('=')[1]; // получаю из request токен
-    console.log(sessionToken);
+    console.log("sessionToken", sessionToken);
     const userSession = sessions[sessionToken];
     if (!userSession){
-        return res.status(401).send({message: 'Unauthorized'});
+        return res.status(401).send({message: 'Yor are not logged in'});
     }
     const userId = userSession.userId;
-    res.status(200).send([{
+    console.log(userId);
+    return res.status(200).send([{
         id: 1,
         email: 'Learn Node',
         userId
     }]);
 });
+
+app.get('/login', (req, res) => {
+    return res.status(200).send({message: 'Redirected to login'});
+})
 function isUserRegistred(email) {
     //find email in database return user object
     return email === "test@test.at";
@@ -59,7 +64,7 @@ app.post('/sessions', (req, res) => {
 
         //send to Client als header
         res.set('Set-Cookie', `session=${sessionToken}`); //request bei allen endpoint wurde cookies hinzugefuegt
-        res.redirect('/');
+        return res.redirect('http://localhost:4200/');
     }
     
 // }

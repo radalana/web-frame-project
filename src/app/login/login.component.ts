@@ -11,18 +11,24 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent {
   hide = true;
-
+  constructor(private http: HttpClient, private router: Router) {}
   //damit Daten in alle Requesten in json format verschikt werden (kann man auch direct in request)
   httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
   }
-
+  // getLoginFormular() {
+  //   return this.http.get<{message: string}>('http://localhost:3000/login', this.httpOptions)
+  //   .subscribe((response) => {console.log(response.message)
+  //   });
+  // }
   //construct injection
-  constructor(private http: HttpClient, private router: Router) {}
+  
 
   onSubmit(form: FormGroup) {
     console.log(form.value);
     //{message: string} erwartet response from server als objekt mit message property
+    //anstatt message - Token
+    //implemetation in backendServies.ts
     this.http.post<{message: string, redirectUrl: string}>('http://localhost:3000/sessions', form.value, this.httpOptions)
       //feedback von server zu bekommen
       .subscribe((response) => {
