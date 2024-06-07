@@ -24,13 +24,13 @@ app.get('/', (req, res)  => {
     const token = req.headers.cookie?.split('=')[1];
     console.log('token in get /', token);
     
-    const userEmail = sessions[token];
-    console.log('email', userEmail);
-    if (!userEmail){
+    const user = sessions[token];
+    console.log('email', user.email);
+    if (!user){
         return res.status(401).send({message: 'Yor are not logged in'});
     }
     return res.status(200).send({
-        message: 'Welcome ' + userEmail
+        message: 'Welcome ' + user.email
     });
 });
 
@@ -73,6 +73,16 @@ app.post('/sessions', (req, res) => {
         return res.send({Token: sessionToken});
     }
 );
+
+app.delete('/sessions', (req, res) => {
+    //get token
+    const token = req.headers.cookie?.split('=')[1]; //dвынести в отдельную функцию
+    //delete token token in session
+    delete  sessions[token];
+    //delete token token in browser
+    res.set('Set-Cookie', `session=; HttpOnly; SameSite=Lax`);
+    return res.send({message: 'Logged out'});
+});
 
 
 function hash(password) {
