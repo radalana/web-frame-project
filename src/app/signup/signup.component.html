@@ -1,6 +1,6 @@
 <mat-card>
     <mat-card-content>
-        <form class="example-form" [formGroup]="signupForm">
+        <form class="example-form" [formGroup]="signupForm" (ngSubmit)="onSubmit(signupForm)">
             <p>
                 <mat-form-field>
                     <mat-label>E-Mail</mat-label>

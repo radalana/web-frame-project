@@ -14,7 +14,17 @@ const corsOptions = {
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
+const db = [
+    {
+        email: "test@test.at",
+        password: "12345678"
+    },
+    {
+        email: "test2@test.at",
+        password: "123"
+    }
 
+];
 const sessions = {
     //"test@test.at12345678_0.6940021015496056" : "test@test.at"
 };
@@ -36,7 +46,9 @@ app.get('/', (req, res)  => {
 
 function isUserRegistred(email) {
     //find email in database return user object
-    return email === "test@test.at";
+    //return email === "test@test.at";
+    const user = db.find((user) => user.email === email);
+    return !!user;
 }
 
 //TODO: rename to verify user
@@ -87,29 +99,30 @@ app.delete('/sessions', (req, res) => {
     return res.send({message: 'Logged out'});
 });
 
-
+/*
+stub function for password hashing
+*/
 function hash(password) {
     return password;
 }
-
-
-
-
-
+function saveUserToDatabase(user) {
+    db.push(user);
+    console.log('database updated', db);
+}
 app.post('/users', (req, res) => {
     try {
         const userData = req.body;
         console.log(userData);
         const {email, password, ...contactInformation} = userData;
         const hashedPassword = hash(password);
-        const user = {email, hashedPassword, ...contactInformation};
+        const user = {'email': email, 'password': hashedPassword, ...contactInformation};
         if (isUserRegistred(email)){
-            res.status(409).json({message: `User with ${email} already exists`});
+            return res.status(409).json({message: `User with ${email} already exists`});
         }
         saveUserToDatabase(user);
         res.status(201).json({message: `User ${email} created successfully`});
     }catch(error) {
-        res.status(500).json({ error: 'Internal Server Error gggg' });
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 

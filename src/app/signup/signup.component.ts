@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { BackendService } from '../backend.service';
 
 export const confirmPassword: ValidatorFn = (
   control: AbstractControl
@@ -16,7 +17,7 @@ export const confirmPassword: ValidatorFn = (
 })
 
 export class SignupComponent {
-  
+  constructor(private backendService: BackendService) {}
   public signupForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.minLength(8)]),
@@ -25,4 +26,9 @@ export class SignupComponent {
   },
   confirmPassword
   );
+  onSubmit(form: FormGroup) {
+    console.log(form.value);
+    this.backendService.signUp(form.value.email, form.value.password, form.value.company, form.value.address, form.value.city, form.value.postal_code);
+    //this.router.navigate(['/']);
+  }
 }
