@@ -14,4 +14,8 @@ export class LandingPageComponent {
     this.backendService.getLandingPage();
   }
 
+  logout() {
+    this.backendService.logout();
+  }
+
 }

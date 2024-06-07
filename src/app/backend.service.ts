@@ -36,6 +36,20 @@ export class BackendService {
             }
         );
     }
+    logout() {
+        return this.http.delete('http://localhost:3000/sessions', this.httpOptions)
+            .subscribe({
+                next: (response) => { 
+                    //his.router.navigate(['/login']);
+                    console.log("token: " + this.token);
+                },
+                error: (error) => {
+                    //TO-DO message in browser
+                    console.log(error.statusText);
+                }
+            });
+    }
+    
     getLandingPage() {
        return this.http.get<{message: string}>('http://localhost:3000/', this.httpOptions)
         .subscribe({
