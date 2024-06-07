@@ -7,7 +7,7 @@ import { Router } from "@angular/router";
 })
 
 export class BackendService {
-    constructor(private http: HttpClient, private route: Router) {}
+    constructor(private http: HttpClient, private router: Router) {}
     //damit Daten in alle Requesten in json format verschikt werden (kann man auch direct in request)
     private token: string = "";
     httpOptions = {
@@ -26,18 +26,18 @@ export class BackendService {
             .subscribe({
                 next: (response) => {
                     this.token = response.Token;
-                    this.route.navigate(['/']);
+                    this.router.navigate(['/']);
                     console.log("token: " + this.token);
                 },
                 error: (error) => {
+                    //TO-DO message in browser
                     console.log(error.statusText);
                 }
             }
         );
     }
     getLandingPage() {
-       
-        return this.http.get<{message: string}>('http://localhost:3000/', this.httpOptions)
+       return this.http.get<{message: string}>('http://localhost:3000/', this.httpOptions)
         .subscribe({
             next: (response) => {
                 console.log(response.message)
@@ -45,7 +45,8 @@ export class BackendService {
             error: (error) => {
                 //TO-DO message
                 console.log(error.statusText);
-        }
+                this.router.navigate(['/login']);
+            }
     });
     }
 }
