@@ -65,7 +65,7 @@ app.post('/sessions', (req, res) => {
     }
         const sessionToken = generateToken(email, password);
         //lege ein neuen Session Token
-        sessions[sessionToken] = {email}; //passord not in session!
+        sessions[sessionToken] = {'email': email}; //passord not in session!
         
         //send to Client als header
         res.set('Set-Cookie', `session=${sessionToken}; HttpOnly; SameSite=Lax`); //request bei allen endpoint wurde cookies hinzugefuegt

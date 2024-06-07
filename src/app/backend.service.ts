@@ -9,25 +9,17 @@ import { Router } from "@angular/router";
 export class BackendService {
     constructor(private http: HttpClient, private router: Router) {}
     //damit Daten in alle Requesten in json format verschikt werden (kann man auch direct in request)
-    private token: string = "";
     httpOptions = {
         headers: new HttpHeaders(
             {'Content-Type': 'application/json'}
         ),
         withCredentials: true
     };
-    
-    
-    isLoggedIn() {
-        return !!this.token;
-    }
     login(email: string, password: string) {
         this.http.post<{ Token: string }>('http://localhost:3000/sessions', {"email" : email, "password": password}, this.httpOptions)
             .subscribe({
                 next: (response) => {
-                    this.token = response.Token;
                     this.router.navigate(['/']);
-                    console.log("token: " + this.token);
                 },
                 error: (error) => {
                     //TO-DO message in browser
@@ -37,11 +29,10 @@ export class BackendService {
         );
     }
     logout() {
-        return this.http.delete('http://localhost:3000/sessions', this.httpOptions)
+        return this.http.delete<{ message: string }>('http://localhost:3000/sessions', this.httpOptions)
             .subscribe({
                 next: (response) => { 
-                    //his.router.navigate(['/login']);
-                    console.log("token: " + this.token);
+                    console.log(response.message);
                 },
                 error: (error) => {
                     //TO-DO message in browser
