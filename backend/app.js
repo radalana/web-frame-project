@@ -2,33 +2,38 @@ const express = require('express');
 const app = express(); //express server gestartet
 
 const cors = require('cors');
-app.use(cors());//cross origin request zu ermöglichen
+const corsOptions = {
+    origin: 'http://localhost:4200', // Адрес вашего Angular приложения
+    credentials: true // Разрешает отправку и получение куки
+  };
+  app.use(cors(corsOptions));//cross origin request zu ermöglichen
+
+
  
 //um mit json files zu arbeiten
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
-const sessions = {};
+
+const sessions = {
+    //"test@test.at12345678_0.6940021015496056" : "test@test.at"
+};
 
 app.get('/', (req, res)  => {
-    const sessionToken = req.headers.cookie?.split('=')[1]; // получаю из request токен
-    console.log("sessionToken", sessionToken);
-    const userSession = sessions[sessionToken];
-    if (!userSession){
+    console.log('headers', req.headers.cookie);
+    const token = req.headers.cookie?.split('=')[1];
+    console.log('token in get /', token);
+    
+    const userEmail = sessions[token];
+    console.log('email', userEmail);
+    if (!userEmail){
         return res.status(401).send({message: 'Yor are not logged in'});
     }
-    const userId = userSession.userId;
-    console.log(userId);
-    return res.status(200).send([{
-        id: 1,
-        email: 'Learn Node',
-        userId
-    }]);
+    return res.status(200).send({
+        message: 'Welcome ' + userEmail
+    });
 });
 
-app.get('/login', (req, res) => {
-    return res.status(200).send({message: 'Redirected to login'});
-})
 function isUserRegistred(email) {
     //find email in database return user object
     return email === "test@test.at";
@@ -40,7 +45,7 @@ function checkPasswordForThisEmail(password, email) {
     return email=== "test@test.at" && password === "12345678";
 }
 function generateToken(email, password) {
-    return email + password + ' ' + Math.random();
+    return email + password + '_' + Math.random();
 }
 app.post('/sessions', (req, res) => {
     const {email, password} = req.body;
@@ -60,19 +65,15 @@ app.post('/sessions', (req, res) => {
     }
         const sessionToken = generateToken(email, password);
         //lege ein neuen Session Token
-        sessions[email] = {sessionToken}; //passord not in session!
-
+        sessions[sessionToken] = {email}; //passord not in session!
+        
         //send to Client als header
-        //res.set('Set-Cookie', `session=${sessionToken}`); //request bei allen endpoint wurde cookies hinzugefuegt
+        res.set('Set-Cookie', `session=${sessionToken}; HttpOnly; SameSite=Lax`); //request bei allen endpoint wurde cookies hinzugefuegt
+        
         return res.send({Token: sessionToken});
     }
 );
-/*
-app.get('/my', (req, res) => {
-    console.log('LandingPage');
-    res.status(200).send({message: 'Welcome'});
-})
-*/
+
 
 function hash(password) {
     return password;

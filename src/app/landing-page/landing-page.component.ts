@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { BackendService } from '../backend.service';
 
 
 @Component({
@@ -8,13 +8,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   styleUrl: './landing-page.component.scss'
 })
 export class LandingPageComponent {
-  constructor (private http: HttpClient){}
-  httpOptions = {
-    headers: new HttpHeaders({'Content-Type': 'application/json'})
+  constructor (private backendService: BackendService){}
+
+  ngOnInit() {
+    this.backendService.getLandingPage();
   }
-  getLandingPage() {
-    return this.http.get<{message: string}>('http://localhost:3000/', this.httpOptions)
-    .subscribe((response) => {console.log(response.message)
-    });
-  }
+
 }
