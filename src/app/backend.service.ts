@@ -1,12 +1,13 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Router } from "@angular/router";
 
 @Injectable({
     providedIn: "root"
 })
 
 export class BackendService {
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient, private route: Router) {}
     //damit Daten in alle Requesten in json format verschikt werden (kann man auch direct in request)
     private token: string = "";
     httpOptions = {
@@ -25,6 +26,7 @@ export class BackendService {
             .subscribe({
                 next: (response) => {
                     this.token = response.Token;
+                    this.route.navigate(['/']);
                     console.log("token: " + this.token);
                 },
                 error: (error) => {
@@ -38,8 +40,10 @@ export class BackendService {
         return this.http.get<{message: string}>('http://localhost:3000/', this.httpOptions)
         .subscribe({
             next: (response) => {
-                console.log(response.message)},
+                console.log(response.message)
+                },
             error: (error) => {
+                //TO-DO message
                 console.log(error.statusText);
         }
     });
