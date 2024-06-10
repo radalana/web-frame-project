@@ -35,7 +35,6 @@ export class BackendService {
         this.http.post<{ message: string }>('http://localhost:3000/sessions', {"email" : email, "password": password}, this.httpOptions)
             .subscribe({
                 next: (response) => {
-                    this.showFlashMessage(response.message);
                     console.log(response.message);
                     this.router.navigate(['/']);
                 },
@@ -85,6 +84,7 @@ export class BackendService {
             error: (error) => {
                 console.log(error.statusText);
                 this.showFlashMessage(error.error.message);
+                this.router.navigate(['/login']);
             }
         });
     }

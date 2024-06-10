@@ -1,10 +1,7 @@
 import { Component } from '@angular/core';
-import { Injectable } from '@angular/core';
 import { BackendService } from '../../backend.service';
-import { ActivatedRoute } from '@angular/router';
-@Injectable({
-  providedIn: "root"
-})
+import { ActivatedRoute, Router } from '@angular/router';
+
 @Component({
   selector: 'app-highscore-list',
   templateUrl: './highscore-list.component.html',
@@ -14,7 +11,7 @@ export class HighscoreListComponent {
   displayedColumns: string[] = ['position', 'email', 'score'];
   columnsToDisplay: string[] = this.displayedColumns.slice();
   data: any;
-  constructor(private backendService: BackendService, private route: ActivatedRoute) {}
+  constructor(private backendService: BackendService, private route: ActivatedRoute, private router: Router) {}
   ngOnInit() {
     this.route.params.subscribe(() => {
       this.getHighscores();
@@ -33,6 +30,7 @@ export class HighscoreListComponent {
       },
       error: (error) => {
         console.log(error.error.message);
+        this.router.navigate(['/login']);
       }
     });
   }

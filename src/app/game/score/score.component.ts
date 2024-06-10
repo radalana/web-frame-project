@@ -10,7 +10,7 @@ import { Injectable } from '@angular/core';
   styleUrl: './score.component.scss'
 })
 export class ScoreComponent {
-    private scores: number = 100;
+    private scores: number = 1000;
     getScores() {
         return this.scores;
     }

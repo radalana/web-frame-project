@@ -132,12 +132,12 @@ const sessions = {
 };
 
 app.get('/', (req, res)  => {
-    console.log('headers', req.headers.cookie);
+    //console.log('headers', req.headers.cookie);
     const token = req.headers.cookie?.split('=')[1] || '';
-    console.log('token in get /', token);
+    //console.log('token in get /', token);
     
     const user = sessions[token];
-    console.log('email', user.email);
+    console.log(sessions);
     if (!user){
         return res.status(401).send({message: 'Yor are not logged in'});
     }
@@ -156,37 +156,40 @@ function isUserRegistred(email) {
 
 //TODO: rename to verify user
 function checkPasswordForThisEmail(password, email) {
-    //only now befor database
-    return email=== "test@test.at" && password === "12345678";
+    const user = db.find((user) => user.email === email);
+    if (!user) {
+        return false;
+    }
+    return user.password === password;
+    
 }
 function generateToken(email, password) {
     return email + password + '_' + Math.random();
 }
 app.post('/sessions', (req, res) => {
     const {email, password} = req.body;
-    
+    console.log(sessions);
     if (!email || !password) { //validation 
         return res.status(400).send({Token: 'E-mail und Passwort sind erforderlich'});
     }
     if (!isUserRegistred(email)) {//validate
-        res.status(401).json({
+        return res.status(401).json({
             message: 'No user with this email exists'
          });
     }
     if(!checkPasswordForThisEmail(password, email)) {
-        res.status(401).json({
+        return res.status(401).json({
             message: 'Incorrect password'
         });
     }
         const sessionToken = generateToken(email, password);
-        //user.getScores();
         //lege ein neuen Session Token
         sessions[sessionToken] = {'email': email}; //passord not in session!
         
         //send to Client als header
         res.set('Set-Cookie', `session=${sessionToken}; HttpOnly; SameSite=Lax`); //request bei allen endpoint wurde cookies hinzugefuegt
         
-        return res.status(200).send({message: `Logged in as ${email} with token ${sessionToken}`});
+        return res.status(200).send({message: `Logged in as ${email}`, token: sessionToken});
     }
 );
 
@@ -198,7 +201,9 @@ app.delete('/sessions', (req, res) => {
     }
     //delete token token in session
     delete  sessions[token];
+    console.log(sessions);
     //delete token token in browser
+    
     res.set('Set-Cookie', `session=; HttpOnly; SameSite=Lax`);
     return res.send({message: 'Logged out'});
 });
@@ -234,29 +239,30 @@ app.post('/users', (req, res) => {
     }
 });
 
-app.post('/highscores', (req, res) => {
-    //check if logged in
+function isloggedIn(req, res, next) {
     const token = req.headers.cookie?.split('=')[1];
     if (!token) {
-        return res.status(401).send({ message: 'Not logged in' });
+        return res.status(401).send({ message: ' middleware Not logged in' });
     }
-    //find user
     const session = sessions[token];
     if (!session) {
-        return res.status(401).send({ message: 'Not logged in' });
+        return res.status(401).send({ message: 'middleware 2 Not logged in' });
     }
-    //console.log('session', session);
     const user = db.find((user) => user.email === session.email);
     console.log('user', user);
     if (!user) {
         return res.status(401).send({ message: 'User does not exist' });
     }
-
+    req.user = user;
+    next();
+}
+app.post('/highscores', isloggedIn, (req, res) => {
+    const user = req.user;
     //get scores
     const scores = req.body.scores;
 
     //update scores in db
-    user['scores'] = scores;
+    user['score'] = scores;
 
     return res.status(200).send({ message: 'Scores saved' });
 });
@@ -266,7 +272,8 @@ function getHighscores() {
         return {email: user.email, score: user.score};
     })
 }
-app.get('/highscores', (req, res) => {
+
+app.get('/highscores', isloggedIn, (req, res) => {
     const userEmailAndScoresList = getHighscores();
     return res.status(200).send({ highscoreList: userEmailAndScoresList });
 });

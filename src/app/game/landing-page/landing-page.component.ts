@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { BackendService } from '../../backend.service';
 import { ScoreComponent } from '../score/score.component';
-import { HighscoreListComponent } from '../highscore-list/highscore-list.component';
 import { Router } from '@angular/router';
 @Component({
   selector: 'app-landing-page',
@@ -9,7 +8,7 @@ import { Router } from '@angular/router';
   styleUrl: './landing-page.component.scss'
 })
 export class LandingPageComponent {
-  constructor (private backendService: BackendService, private score: ScoreComponent, private router: Router){}
+  constructor (private backendService: BackendService, private score: ScoreComponent){}
   ngOnInit() {
     // get scores
     this.backendService.getLandingPage();
