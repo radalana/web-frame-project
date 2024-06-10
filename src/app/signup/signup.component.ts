@@ -34,4 +34,6 @@ export class SignupComponent {
     this.backendService.signUp(form.value.email, form.value.password, form.value.company, form.value.address, form.value.city, form.value.postal_code);
     //this.router.navigate(['/']);
   }
+
+  
 }

@@ -2,13 +2,15 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
-import { LandingPageComponent } from './landing-page/landing-page.component';
+import { LandingPageComponent } from './game/landing-page/landing-page.component';
+import { HighscoreListComponent } from './game/highscore-list/highscore-list.component';
 
 
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
   {path: 'signup', component: SignupComponent},
   {path: '', component: LandingPageComponent},
+  {path: 'highscores', component: HighscoreListComponent}
 ];
 
 @NgModule({

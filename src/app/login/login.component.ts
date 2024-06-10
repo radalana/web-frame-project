@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
-import {FormControl, FormGroup, NgForm, Validators} from '@angular/forms';
+import {FormControl, FormGroup,  Validators} from '@angular/forms';
 import { Router } from '@angular/router';
 import { BackendService } from '../backend.service';
 
@@ -21,8 +21,7 @@ export class LoginComponent {
 
   
   onSubmit(form: FormGroup) {
-    console.log(form.value);
+    //console.log(form.value);
     this.backendService.login(form.value.email, form.value.password);
-    //this.router.navigate(['/']);
   }
 }

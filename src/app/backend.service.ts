@@ -1,14 +1,14 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Router } from "@angular/router";
-import { response } from "express";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Injectable({
     providedIn: "root"
 })
 
 export class BackendService {
-    constructor(private http: HttpClient, private router: Router) {}
+    constructor(private http: HttpClient, private router: Router, private snackBar: MatSnackBar) {}
     //damit Daten in alle Requesten in json format verschikt werden (kann man auch direct in request)
     httpOptions = {
         headers: new HttpHeaders(
@@ -17,14 +17,16 @@ export class BackendService {
         withCredentials: true
     };
     signUp(email: string, password: string, company?: string, address?: string, city?: string, postal_code?: number) {
-        return this.http.post<{ message: string }>('http://localhost:3000/users', {"email" : email, "password": password, "company": company, "address": address, "city": city, "postal_code": postal_code}, this.httpOptions)
+        return this.http.post<{ message: string, token: string }>('http://localhost:3000/users', {"email" : email, "password": password, "company": company, "address": address, "city": city, "postal_code": postal_code}, this.httpOptions)
             .subscribe({
                 next: (response) => {
-                    console.log(response.message);
-                   // this.router.navigate(['/login']);
+                    console.log(response.message, response.token);
+                    this.showFlashMessage(response.message);
+                    this.router.navigate(['/']);
                 },
                 error: (error) => {
                     //TO-DO message in browser
+                    this.showFlashMessage(error.error.message);
                     console.log(error.error.message);
                 }
             });
@@ -33,11 +35,13 @@ export class BackendService {
         this.http.post<{ message: string }>('http://localhost:3000/sessions', {"email" : email, "password": password}, this.httpOptions)
             .subscribe({
                 next: (response) => {
+                    this.showFlashMessage(response.message);
                     console.log(response.message);
                     this.router.navigate(['/']);
                 },
                 error: (error) => {
                     //TO-DO message in browser
+                    this.showFlashMessage(error.error.message);
                     console.log(error.statusText);
                 }
             }
@@ -58,16 +62,41 @@ export class BackendService {
     }
     
     getLandingPage() {
-       return this.http.get<{message: string}>('http://localhost:3000/', this.httpOptions)
+       return this.http.get<{message: string, scores: number}>('http://localhost:3000/', this.httpOptions)
         .subscribe({
             next: (response) => {
                 console.log(response.message)
+                // отправить scores в компонент LandingPageComponent
                 },
             error: (error) => {
-                //TO-DO message
                 console.log(error.statusText);
                 this.router.navigate(['/login']);
             }
     });
     }
+
+    sendUserScores(scores: number) {
+        return this.http.post<{ message: string }>('http://localhost:3000/highscores', {"scores": scores}, this.httpOptions)
+        .subscribe({
+            next: (response) => {
+                console.log(response.message);
+                this.showFlashMessage(response.message);
+            },
+            error: (error) => {
+                console.log(error.statusText);
+                this.showFlashMessage(error.error.message);
+            }
+        });
+    }
+
+    getHighscores() {
+        return this.http.get<{highscoreList: any}>('http://localhost:3000/highscores', this.httpOptions);
+    }
+
+    public showFlashMessage(message: string) {
+        this.snackBar.open(message, 'Close', {
+          duration: 3000,
+          verticalPosition: 'top'
+        });
+      }
 }

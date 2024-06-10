@@ -13,15 +13,19 @@ import {MatInputModule} from '@angular/material/input';//for form
 import {MatIconModule} from '@angular/material/icon';//for form icons
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
-import { LandingPageComponent } from './landing-page/landing-page.component';
-
-
+import { LandingPageComponent } from './game/landing-page/landing-page.component';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { ScoreComponent } from './game/score/score.component';
+import { HighscoreListComponent } from './game/highscore-list/highscore-list.component';
+import {MatTableModule} from '@angular/material/table'; 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     SignupComponent,
-    LandingPageComponent
+    LandingPageComponent,
+    ScoreComponent,
+    HighscoreListComponent
   ],
   imports: [
     BrowserModule,
@@ -34,6 +38,8 @@ import { LandingPageComponent } from './landing-page/landing-page.component';
     ReactiveFormsModule,
     HttpClientModule,
     MatCardModule,
+    MatSnackBarModule,
+    MatTableModule
   ],
   providers: [
     provideAnimationsAsync()

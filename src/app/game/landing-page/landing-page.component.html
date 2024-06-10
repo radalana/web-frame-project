@@ -3,6 +3,7 @@
 </div>
 <div>
     <button mat-stroked-button color="primary" (click)="saveScores()">Save my scores</button>
-    <button mat-stroked-button color="primary" >Highscores</button>
+    <!-- просто перенаправить на higscore -->
+    <button mat-stroked-button color="primary" [routerLink]="['/highscores']">Highscores</button>
     <button mat-stroked-button color="primary" (click)="logout()">Log out</button>
 </div>

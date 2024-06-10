@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
-import {MatTableModule} from '@angular/material/table';
-
+import { Injectable } from '@angular/core';
+import { BackendService } from '../../backend.service';
+import { ActivatedRoute } from '@angular/router';
+@Injectable({
+  providedIn: "root"
+})
 @Component({
   selector: 'app-highscore-list',
   templateUrl: './highscore-list.component.html',
@@ -9,11 +13,33 @@ import {MatTableModule} from '@angular/material/table';
 export class HighscoreListComponent {
   displayedColumns: string[] = ['position', 'email', 'score'];
   columnsToDisplay: string[] = this.displayedColumns.slice();
-  data = highscores
+  data: any;
+  constructor(private backendService: BackendService, private route: ActivatedRoute) {}
+  ngOnInit() {
+    this.route.params.subscribe(() => {
+      this.getHighscores();
+    });
+  }
   getPosition(index: number): number {
     return index + 1;
   }
-} 
+  getHighscores() {
+    this.backendService.getHighscores()
+    .subscribe({
+      next: (response) => {
+        console.log('in highscore-list',response.highscoreList);
+        this.data = response.highscoreList;
+        
+      },
+      error: (error) => {
+        console.log(error.error.message);
+      }
+    });
+  }
+}
+
+
+/*
 const highscores = [
   {email: 'wI8Kz@example.com', score: 100 },
   { email: 'jD3Rb@example.com', score: 150 },
@@ -26,3 +52,4 @@ const highscores = [
   { email: 'gS6Ln@example.com', score: 500 },
   { email: 'hT9Po@example.com', score: 550 }
 ]
+*/
