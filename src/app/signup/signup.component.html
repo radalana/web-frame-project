@@ -42,13 +42,13 @@
             <p>
                 <mat-form-field class="example-full-width">
                     <mat-label>Firma</mat-label>
-                    <input matInput name="company" value="FH Technikum Wien" disabled>
+                    <input matInput name="company" value="FH Technikum Wien" formControlName="company">
                 </mat-form-field>
             </p>
             <p>
                 <mat-form-field class="example-full-width">
                     <mat-label>Adresse</mat-label>
-                    <textarea matInput name="address"></textarea>
+                    <textarea matInput name="address" formControlName="address"></textarea>
                 </mat-form-field>
             </p>
             <table class="example-full-width" cellspacing="0">
@@ -56,7 +56,7 @@
                     <td>
                         <mat-form-field class="example-full-width">
                             <mat-label>Stadt</mat-label>
-                            <input matInput placeholder="Wien" name="city">
+                            <input matInput placeholder="Wien" name="city" formControlName="city">
                         </mat-form-field>
                     </td>
                     <td>

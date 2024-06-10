@@ -22,12 +22,15 @@ export class SignupComponent {
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.minLength(8)]),
     password_confirm: new FormControl('', [Validators.required]),
-    postal_code: new FormControl('', [Validators.pattern('^\\d*')])
+    postal_code: new FormControl('', [Validators.pattern('^\\d*')]),
+    company: new FormControl('FH Technikum Wien'),
+    address: new FormControl(''),
+    city: new FormControl('',[Validators.pattern("[a-zA-Z ]*")]),
   },
   confirmPassword
   );
   onSubmit(form: FormGroup) {
-    console.log(form.value);
+    console.log('in onSubit form.value: ' + form.value);
     this.backendService.signUp(form.value.email, form.value.password, form.value.company, form.value.address, form.value.city, form.value.postal_code);
     //this.router.navigate(['/']);
   }
