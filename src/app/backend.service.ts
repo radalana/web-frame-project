@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Router } from "@angular/router";
+import { response } from "express";
 
 @Injectable({
     providedIn: "root"
@@ -24,14 +25,15 @@ export class BackendService {
                 },
                 error: (error) => {
                     //TO-DO message in browser
-                    console.log(error.statusText);
+                    console.log(error.error.message);
                 }
             });
     }
     login(email: string, password: string) {
-        this.http.post<{ Token: string }>('http://localhost:3000/sessions', {"email" : email, "password": password}, this.httpOptions)
+        this.http.post<{ message: string }>('http://localhost:3000/sessions', {"email" : email, "password": password}, this.httpOptions)
             .subscribe({
                 next: (response) => {
+                    console.log(response.message);
                     this.router.navigate(['/']);
                 },
                 error: (error) => {
