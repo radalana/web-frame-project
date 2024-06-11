@@ -3,8 +3,8 @@ const app = express(); //express server gestartet
 
 const cors = require('cors');
 const corsOptions = {
-    origin: 'http://localhost:4200', // Адрес вашего Angular приложения
-    credentials: true // Разрешает отправку и получение куки
+    origin: 'http://localhost:4200',
+    credentials: true 
   };
 app.use(cors(corsOptions));//cross origin request zu ermöglichen
 
@@ -160,17 +160,17 @@ function checkPasswordForThisEmail(password, email) {
     if (!user) {
         return false;
     }
-    return user.password === password;
+    return user.password === password; //in real hash 
     
 }
 function generateToken(email, password) {
-    return email + password + '_' + Math.random();
+    return email + password + '_' + Math.random();// in real anders
 }
 app.post('/sessions', (req, res) => {
     const {email, password} = req.body;
     console.log(sessions);
     if (!email || !password) { //validation 
-        return res.status(400).send({Token: 'E-mail und Passwort sind erforderlich'});
+        return res.status(400).send({message: 'E-mail und Passwort sind erforderlich'});
     }
     if (!isUserRegistred(email)) {//validate
         return res.status(401).json({
@@ -182,20 +182,21 @@ app.post('/sessions', (req, res) => {
             message: 'Incorrect password'
         });
     }
+        //aufgabe 1.3
         const sessionToken = generateToken(email, password);
         //lege ein neuen Session Token
         sessions[sessionToken] = {'email': email}; //passord not in session!
         
         //send to Client als header
         res.set('Set-Cookie', `session=${sessionToken}; HttpOnly; SameSite=Lax`); //request bei allen endpoint wurde cookies hinzugefuegt
-        
+        //end aufgabe 1.3
         return res.status(200).send({message: `Logged in as ${email}`, token: sessionToken});
     }
 );
 
 app.delete('/sessions', (req, res) => {
     //get token
-    const token = req.headers.cookie?.split('=')[1]; //dвынести в отдельную функцию
+    const token = req.headers.cookie?.split('=')[1];
     if (!token) {
         return res.status(400).send({ message: 'Token not found' });
     }
@@ -205,7 +206,7 @@ app.delete('/sessions', (req, res) => {
     //delete token token in browser
     
     res.set('Set-Cookie', `session=; HttpOnly; SameSite=Lax`);
-    return res.send({message: 'Logged out'});
+    return res.status(204).send({message: 'Logged out'});
 });
 
 /*
@@ -218,13 +219,17 @@ function saveUserToDatabase(user) {
     db.push(user);
     console.log('database updated', db);
 }
+
+// u1. 1 
 app.post('/users', (req, res) => {
     try {
+        // Extrahiert die Benutzerdaten aus der Anfrage
         const userData = req.body;
         console.log('Route bekomt alle Informationen des SignUp Formular', userData);
         const {email, password, ...contactInformation} = userData;
         const hashedPassword = hash(password);
         const user = {'email': email, 'password': hashedPassword, ...contactInformation};
+        //Übung 1.2 
         if (isUserRegistred(email)){
             //return res.status(409).({message: `User with ${email} already exists`});
             return res.status(409).json({message: `User with ${email} already exists`});
@@ -232,6 +237,7 @@ app.post('/users', (req, res) => {
         saveUserToDatabase(user);
         const sessionToken = generateToken(email, password);
         sessions[sessionToken] = {'email': email};
+        //Setzt das Sitzungstoken als HttpOnly-Cookie
         res.set('Set-Cookie', `session=${sessionToken}; HttpOnly; SameSite=Lax`);
         res.status(201).json({message: `User ${email} created successfully`, token: sessionToken});
     }catch(error) {
@@ -242,11 +248,12 @@ app.post('/users', (req, res) => {
 function isloggedIn(req, res, next) {
     const token = req.headers.cookie?.split('=')[1];
     if (!token) {
-        return res.status(401).send({ message: ' middleware Not logged in' });
+        return res.status(401).send({ message: '  Not logged in' });
     }
+    //ob session mit token existiert
     const session = sessions[token];
     if (!session) {
-        return res.status(401).send({ message: 'middleware 2 Not logged in' });
+        return res.status(401).send({ message: 'Not logged in' });
     }
     const user = db.find((user) => user.email === session.email);
     console.log('user', user);
@@ -256,6 +263,8 @@ function isloggedIn(req, res, next) {
     req.user = user;
     next();
 }
+// Aufgabe 2.1
+//eine middleware funtion reinhang
 app.post('/highscores', isloggedIn, (req, res) => {
     const user = req.user;
     //get scores

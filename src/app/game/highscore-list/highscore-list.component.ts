@@ -12,6 +12,7 @@ export class HighscoreListComponent {
   columnsToDisplay: string[] = this.displayedColumns.slice();
   data: any;
   constructor(private backendService: BackendService, private route: ActivatedRoute, private router: Router) {}
+  //reagiere auf route aenderungen
   ngOnInit() {
     this.route.params.subscribe(() => {
       this.getHighscores();

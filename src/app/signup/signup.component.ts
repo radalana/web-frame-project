@@ -23,7 +23,7 @@ export class SignupComponent {
     password: new FormControl('', [Validators.required, Validators.minLength(8)]),
     password_confirm: new FormControl('', [Validators.required]),
     postal_code: new FormControl('', [Validators.pattern('^\\d*')]),
-    company: new FormControl('FH Technikum Wien'),
+    company: new FormControl({value: 'FH Technikum Wien', disabled: true}),
     address: new FormControl(''),
     city: new FormControl('',[Validators.pattern("[a-zA-Z ]*")]),
   },
